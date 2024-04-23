@@ -43,7 +43,7 @@ func ValidateThaiID(id string) error {
 	sum := 0
 	for i, j := 0, 13; j > 1; i, j = i+1, j-1 {
 		val, _ := strconv.Atoi(splited[i])
-		sum = sum + val*j
+		sum += val * j
 	}
 
 	moded := sum % 11
