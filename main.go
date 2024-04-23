@@ -43,7 +43,10 @@ func main() {
 		<-ctx.Done()
 		fmt.Println("shutting down...")
 
-		if err := srv.Shutdown(context.Background()); err != nil {
+		context, contextCancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer contextCancel()
+
+		if err := srv.Shutdown(context); err != nil {
 			log.Printf("HTTP server Shutdown: %v", err)
 		}
 		close(idleConnsClosed)
