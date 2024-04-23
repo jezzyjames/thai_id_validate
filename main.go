@@ -1,37 +1,25 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"strconv"
-	"strings"
+	"io"
+	"log"
+	"log/slog"
+	"net/http"
+	"os"
 )
 
 func main() {
-	fmt.Println(ValidateThaiID("1234567890122"))
-	fmt.Println(ValidateThaiID("1234567890121"))
-}
+	slog.SetLogLoggerLevel(slog.LevelDebug)
 
-func ValidateThaiID(id string) error {
-	if len(id) != 13 {
-		return errors.New("id digits incorrect")
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("Please specify the HTTP port as environment variable, e.g. env PORT=8080 go run http-server.go")
 	}
 
-	splited := strings.Split(id, "")
-	sum := 0
-	for i, j := 0, 13; j > 1; i, j = i+1, j-1 {
-		val, _ := strconv.Atoi(splited[i])
-		sum = sum + val*j
-	}
+	http.HandleFunc("/hello", func(w http.ResponseWriter, req *http.Request) {
+		io.WriteString(w, "Hello, TLS!\n")
+	})
+	slog.Debug("Listening and serving HTTP on :" + port)
 
-	moded := sum % 11
-	result := 11 - moded
-
-	last := result % 10
-	lastID, _ := strconv.Atoi(splited[len(splited)-1])
-
-	if last != lastID {
-		return errors.New("id incorrect")
-	}
-	return errors.New("nil")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
