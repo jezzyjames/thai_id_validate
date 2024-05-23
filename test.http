@@ -1,6 +1,0 @@
-POST http://localhost:8080/thai/ids/verify
-Content-Type: application/json
- 
-{
-  "id": "1959900459873"
-}

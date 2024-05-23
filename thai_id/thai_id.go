@@ -1,6 +1,7 @@
 package thai_id
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"strconv"
@@ -13,7 +14,15 @@ type ThaiID struct {
 	ID string `json:"id"`
 }
 
-func ThaiIdValidateHandler(c *gin.Context) {
+type ThaiIDHandler struct {
+	db *sql.DB
+}
+
+func NewThaiIDHandler(db *sql.DB) ThaiIDHandler {
+	return ThaiIDHandler{db: db}
+}
+
+func (handler ThaiIDHandler) ThaiIdValidateHandler(c *gin.Context) {
 	var thaiID ThaiID
 
 	if err := c.BindJSON(&thaiID); err != nil {
